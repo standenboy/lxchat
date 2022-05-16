@@ -1,0 +1,63 @@
+#!/bin/bash
+response=$(printf '%s' "$*")
+
+
+if [ $response == '' ]; then
+	echo welcome to lxchat [type help]
+	read response 
+
+fi
+
+if [ $response == "start" ]; then
+	server_dir=$(pwd)
+	server_check=$(ls | grep server)
+	if [ $server_check == "server.py" ]; then
+		echo starting server
+		python3 server.py
+	else
+		echo no server in this DIR [make one with make command]
+	fi
+
+fi
+if [ $response == "make" ] ; then
+	act_dir=$(pwd)	
+	cp ~/lxchat/server.py $act_dir/server.py
+	echo what port to use?
+	read port
+	sed -i '6i\SERVER_PORT='${port}'' $act_dir/server.py
+	python3 server.py
+	
+	
+fi
+
+if [ $response == "join" ]; then
+	echo port of server to join
+	read port
+	act_dir=$(pwd)
+	cp ~/lxchat/client.py $act_dir/client.py
+	sed -i '24i\SERVER_PORT='${port}'' $act_dir/client.py
+	python3 $act_dir/client.py
+	
+fi
+
+if [ $response == "username" ]; then
+	echo what would you like your new user name to be?
+	read username
+	touch ~/lxchat/username
+	echo $username > ~/lxchat/username
+	echo username updated
+	
+fi
+
+if [ $response == "help" ]; then
+	echo type start to activate server.py in current DIR
+	echo type make to create a new server in current DIR
+	echo type join to join a active server [lan only currnetly]
+	echo type username to change username
+	echo type help to show this menu
+	
+fi
+
+
+
+
